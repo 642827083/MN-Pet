@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MN Pet 设置</title><style>/* MNP_STYLE */</style></head><body>
+<main id="settings-main">
+  <div id="pet-panel">
+  <div id="pet-settings" role="group" aria-label="桌宠设置" aria-busy="false">
+  <div class="settings-navigation-wrap"><nav class="settings-navigation" role="tablist" aria-label="设置分类">
+    <span class="settings-navigation-slider" aria-hidden="true"></span>
+    <button id="settings-pet-tab" type="button" role="tab" aria-selected="true" aria-controls="settings-pet-page" tabindex="0">桌宠</button>
+    <button id="settings-time-tab" type="button" role="tab" aria-selected="false" aria-controls="settings-time-page" tabindex="-1">计时</button>
+    <button id="settings-stats-tab" type="button" role="tab" aria-selected="false" aria-controls="settings-stats-page" tabindex="-1">统计</button>
+    <button id="settings-about-tab" type="button" role="tab" aria-selected="false" aria-controls="settings-about-page" tabindex="-1">关于插件</button>
+  </nav></div>
+  <div id="settings-pet-page" role="tabpanel" aria-labelledby="settings-pet-tab">
+  <section class="pet-card" aria-labelledby="pet-current-heading">
+    <div class="pet-card-heading"><h2 id="pet-current-heading" class="pet-card-label">当前桌宠</h2><label class="pet-toggle"><span>显示桌宠</span><input id="pet-visible" type="checkbox" role="switch" disabled></label></div>
+    <div class="pet-overview">
+      <div class="pet-preview"><img id="pet-preview-image" alt="当前桌宠预览" hidden><span id="pet-empty">尚未导入</span></div>
+      <div class="pet-description"><strong id="pet-current">选择你的桌宠</strong><small id="pet-detail">导入动作包或图片，显示在 MN 学习界面。</small><small>拖动调整位置，右上角展开计时器。</small>
+        <div id="pet-delete-row" class="pet-delete-row" hidden><button id="pet-edit" class="secondary" type="button" hidden>编辑桌宠</button><button id="pet-delete" class="quiet" type="button">删除当前桌宠</button><button id="pet-delete-cancel" class="quiet" type="button" hidden>取消</button></div>
+      </div>
+    </div>
+    <div id="pet-sources" class="pet-sources" role="group" aria-label="切换桌宠"><button id="pet-use-builtin" class="secondary" type="button">哦鲸鲸</button><button id="pet-use-pack" class="secondary" type="button" hidden>动作桌宠</button><button id="pet-use-image" class="secondary" type="button" hidden>图片桌宠</button></div>
+      <div class="divider"></div>
+    <div class="pet-import-inline">
+    <div class="pet-card-heading"><h2 id="pet-import-heading">添加桌宠</h2></div>
+    <div class="pet-import-row"><div><button id="pet-image-button" class="secondary" type="button" aria-describedby="pet-image-format" disabled>导入图片</button><small id="pet-image-format">PNG · JPG · WebP</small></div><div><button id="pet-pack-button" class="secondary" type="button" aria-describedby="pet-pack-format" disabled>导入动作包</button><small id="pet-pack-format">.mnpet</small></div></div>
+    <input id="pet-pack-file" type="file" accept=".mnpet" hidden><input id="pet-image-file" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" hidden>
+      </div>
+  </section>
+  <section class="pet-card" aria-labelledby="pet-display-heading">
+    <h2 id="pet-display-heading">显示设置</h2>
+    <div class="pet-sliders"><label for="pet-size"><span>大小 <output id="pet-size-value">112</output></span><input id="pet-size" type="range" min="64" max="128" step="1" value="112" disabled></label><label for="pet-opacity"><span>不透明度 <output id="pet-opacity-value">100%</output></span><input id="pet-opacity" type="range" min="35" max="100" step="1" value="100" disabled></label></div>
+    <div class="divider"></div>
+    <label class="pet-mode-row" for="pet-menu-mode"><span><strong>菜单按钮</strong><small>点击显示后约 5 秒收起</small></span><select id="pet-menu-mode" disabled><option value="always">常显</option><option value="tap">点击桌宠时显示</option></select></label>
+  </section>
+
+
+
+  <p class="pet-immediate-note">桌宠调整即时生效</p>
+  </div>
+  <div id="settings-time-page" role="tabpanel" aria-labelledby="settings-time-tab" hidden>
+
+  <div id="focus-settings-panel" class="focus-settings-grid" role="group" aria-label="计时设置与科目">
+  <section id="focus-countdown-card" class="pet-card focus-duration-card" aria-labelledby="focus-countdown-heading">
+    <div class="pet-card-heading"><h2 id="focus-countdown-heading">倒计时</h2><small id="focus-countdown-draft">单次专注</small></div>
+    <form id="focus-countdown-settings">
+      <div class="focus-fields pet-countdown-fields"><label class="focus-countdown-field" for="focus-countdownMinutes">计时时长（分钟）<input id="focus-countdownMinutes" type="number" min="1" max="720" step="1" value="25" required disabled></label></div>
+      <p class="focus-help">1–720 分钟，完成后自动记录专注。</p>
+      <button type="submit" class="secondary" disabled>保存倒计时设置</button>
+      <p id="focus-countdown-status" class="focus-status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+  <section id="focus-pomodoro-card" class="pet-card focus-duration-card" aria-labelledby="focus-settings-heading">
+    <div class="pet-card-heading"><h2 id="focus-settings-heading">番茄钟</h2><small id="focus-pomodoro-draft">专注与休息循环</small></div>
+      <form id="focus-settings">
+        <div class="focus-fields pet-countdown-fields">
+          <label for="focus-workMinutes">专注（分钟）<input id="focus-workMinutes" type="number" min="1" max="180" step="1" value="25" required disabled></label>
+          <label for="focus-shortBreakMinutes">短休息（分钟）<input id="focus-shortBreakMinutes" type="number" min="1" max="60" step="1" value="5" required disabled></label>
+          <label for="focus-longBreakMinutes">长休息（分钟）<input id="focus-longBreakMinutes" type="number" min="1" max="120" step="1" value="15" required disabled></label>
+          <label for="focus-roundsPerCycle">长休息间隔（轮）<input id="focus-roundsPerCycle" type="number" min="2" max="12" step="1" value="4" required disabled></label>
+        </div>
+        <div class="focus-switches">
+          <label class="pet-toggle"><span>专注结束后自动休息</span><input id="focus-autoStartBreak" type="checkbox" role="switch" disabled></label>
+          <label class="pet-toggle"><span>休息结束后自动专注</span><input id="focus-autoStartWork" type="checkbox" role="switch" disabled></label>
+        </div>
+        <button type="submit" class="secondary" disabled>保存番茄钟设置</button>
+        <p id="focus-pomodoro-status" class="focus-status" role="status" aria-live="polite"></p>
+      </form>
+  </section>
+  <section id="focus-subject-card" class="pet-card" aria-labelledby="focus-subject-heading">
+    <div class="pet-card-heading"><h2 id="focus-subject-heading">科目与提醒</h2></div>
+    <label class="pet-mode-row focus-subject-setting" for="focus-subject"><span><strong>当前科目</strong></span><select id="focus-subject" disabled><option>未分类</option></select></label>
+    <small id="focus-subject-lock" class="focus-help" hidden>计时已开始，完成或重置后才能更改科目。</small>
+    <label class="pet-toggle focus-common-alert"><span>计时结束时弹窗提醒</span><input id="focus-alertOnFinish" type="checkbox" role="switch" disabled></label>
+    <details id="focus-subject-details" class="focus-subject-details"><summary>科目管理与预设</summary><div class="focus-subject-options">
+      <small id="focus-preset-hint" class="focus-help">当前使用全局时长，可为此科目保存专属时长。</small>
+      <div class="focus-actions"><button id="focus-save-preset" type="button" class="quiet" disabled>保存为科目专属时长</button><button id="focus-clear-preset" type="button" class="quiet" hidden>使用全局时长</button></div>
+      <form id="focus-add-subject" class="focus-add-subject"><input id="focus-subject-name" type="text" maxlength="12" placeholder="新科目名称" aria-label="新科目名称" autocomplete="off" disabled><button type="submit" class="secondary" disabled>添加科目</button></form>
+      <button id="focus-remove-subject" type="button" class="quiet" disabled>删除科目</button>
+      <small class="focus-help">时长调整从下一次计时生效。</small>
+    </div></details>
+    
+  </section>
+  <p id="focus-status" class="focus-status" role="status" aria-live="polite"></p>
+  </div>
+  <section class="pet-card" aria-labelledby="pet-countdown-heading">
+    <div class="pet-card-heading"><h2 id="pet-countdown-heading">事件倒计时</h2><button id="pet-countdown-clear" type="button" class="quiet" disabled>清空</button></div>
+    <form id="pet-countdown-form" class="pet-countdown-fields">
+      <label for="pet-countdown-name">名称<input id="pet-countdown-name" type="text" maxlength="24" placeholder="例如：考研" autocomplete="off" disabled></label>
+      <label for="pet-countdown-date">日期<input id="pet-countdown-date" type="date" min="1900-01-01" max="9999-12-31" disabled></label>
+      <button type="submit" hidden>保存倒计时</button>
+    </form>
+    <small class="pet-countdown-help">更改后自动保存，点击桌宠查看气泡。</small>
+  </section>
+  </div>
+  <div id="settings-stats-page" role="tabpanel" aria-labelledby="settings-stats-tab" hidden>
+    <div class="focus-stats-overview" role="group" aria-label="专注概览">
+      <div id="focus-today" class="focus-summary-card"><span>今天</span><strong id="focus-today-time">0 分钟</strong><small id="focus-today-count">0 次</small></div>
+      <div id="focus-totals" class="focus-summary-card"><span id="focus-range-label">最近 7 天</span><strong id="focus-range-time">0 分钟</strong><small id="focus-range-count">0 次</small></div>
+      <div class="focus-summary-card"><span>累计</span><strong id="focus-lifetime-time">0 分钟</strong><small id="focus-lifetime-count">0 次</small></div>
+    </div>
+    <section id="focus-stats-card" class="pet-card" aria-labelledby="focus-stats-heading">
+      <div class="pet-card-heading"><h2 id="focus-stats-heading">科目分布</h2><label class="focus-range-control" for="focus-range"><span>统计范围</span><select id="focus-range" disabled><option value="day">今天</option><option value="week" selected>最近 7 天</option><option value="month">最近 30 天</option></select></label></div>
+      <div id="focus-subject-stats-layout" class="focus-subject-stats-layout"><div class="focus-stat-plot">
+      <div id="focus-chart-types" class="focus-chart-types" role="group" aria-label="科目图表类型"><button type="button" data-chart="bar" aria-pressed="true">柱状图</button><button type="button" data-chart="pie" aria-pressed="false">扇形图</button></div>
+      <p id="focus-empty" class="focus-help">还没有专注记录，完成计时后就能看到统计。</p>
+      <div id="focus-subject-chart-scroll" class="focus-chart-scroll"><div id="focus-subject-chart" class="focus-subject-chart" role="group" aria-label="各科目专注时长柱状图"></div></div>
+      <div id="focus-pie" class="focus-pie" hidden></div>
+      </div><div id="focus-subject-breakdown" class="focus-stat-breakdown"><h3>科目明细</h3><div id="focus-subject-stats"></div></div></div>
+    </section>
+    <section class="pet-card" aria-labelledby="focus-distribution-heading"><div class="pet-card-heading"><h2 id="focus-distribution-heading">时间分布</h2></div><div class="focus-chart-scroll"><div id="focus-chart" class="focus-chart" role="group" aria-label="专注时长分布"></div></div></section>
+    <p id="focus-stats-status" class="focus-status" role="status" aria-live="polite"></p>
+  </div>
+  <div id="settings-about-page" role="tabpanel" aria-labelledby="settings-about-tab" hidden>
+    <section class="pet-card about-card" aria-labelledby="about-name">
+      <div class="about-row"><h2 id="about-name">__MNP_ABOUT_NAME__</h2><span class="about-meta"><span id="about-version">v__MNP_ABOUT_VERSION__</span><span aria-hidden="true">·</span><span>__MNP_ABOUT_AUTHOR__</span></span></div>
+      <button type="button" class="about-link" data-about-open="guide"><span class="about-link-text"><strong>插件说明与反馈</strong><small>查看使用说明，反馈问题与建议</small></span><span class="about-chevron" aria-hidden="true">›</span></button>
+      <button type="button" class="about-link" data-about-open="maker"><span class="about-link-text"><strong>制作桌宠</strong><small>前往在线制作网站，制作专属动作包</small></span><span class="about-chevron" aria-hidden="true">›</span></button>
+    </section>
+    <p id="about-status" role="status" aria-live="polite"></p>
+  </div>
+  <p id="pet-status" role="status" aria-live="polite">正在读取桌宠…</p>
+  </div>
+  </div>
+</main>
+<div id="pet-editor" role="dialog" aria-modal="true" aria-labelledby="pet-editor-title" aria-describedby="pet-editor-help" hidden>
+  <div class="pet-import-page">
+    <header class="pet-editor-heading"><h2 id="pet-editor-title" tabindex="-1">导入桌宠</h2><small id="pet-editor-help">拖动图片调整位置，确认后显示为你的桌宠。</small></header>
+    <div id="pet-editor-content" class="pet-editor-content">
+      <section class="pet-edit-grid" aria-label="图片预览与调整">
+        <div class="pet-crop-preview"><canvas id="pet-crop" width="256" height="256" tabindex="0" role="img" aria-label="桌宠图片裁剪，可拖动或使用方向键调整"></canvas><small>预览效果 · 保留透明背景</small></div>
+        <div class="pet-edit-fields"><label for="pet-name">桌宠名称<input id="pet-name" maxlength="24" value="我的桌宠" autocomplete="off"></label><label for="pet-zoom"><span>图片缩放 <output id="pet-zoom-value">100%</output></span><input id="pet-zoom" type="range" min="50" max="400" value="100"></label><button id="pet-reset" type="button" class="quiet">重置图片位置</button></div>
+      </section>
+    </div>
+    <footer class="pet-import-footer"><p id="pet-editor-status" role="status" aria-live="polite"></p><div class="pet-edit-actions"><button id="pet-cancel" type="button" class="secondary">取消</button><button id="pet-confirm" type="button">确认导入</button></div></footer>
+  </div>
+</div>
+<script>window.__MNP_SETTINGS_TOKEN__="__MNP_TOKEN_VALUE__";window.__MNP_SETTINGS_START_PAGE__="__MNP_START_PAGE_VALUE__";</script>
+<script>/* MNP_APP */</script></body></html>

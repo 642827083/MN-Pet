@@ -1,0 +1,10 @@
+{
+  "addonid": "cn.marginnote.mn-pet",
+  "title": "MN Pet",
+  "author": "乔木Joe",
+  "version": "1.0.1",
+  "marginnote_version_min": "4.5.0",
+  "icon": "icon.png",
+  "panel": "web-dist/settings.html",
+  "cert_key": ""
+}

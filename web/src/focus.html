@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN" class="focus-document"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><title>番茄钟</title><style>/* MNP_STYLE */</style></head><body class="focus-page">
+<main id="focus-main">
+  <section id="focus-card" aria-label="基础计时器">
+    <div class="focus-compact-header"><div id="focus-mode" class="focus-mode-switch" role="group" aria-label="计时模式"><span class="focus-mode-slider" aria-hidden="true" style="transform:translate3d(100%,0,0)"></span><button id="focus-mode-countdown" type="button" data-mode="countdown" aria-pressed="false" disabled>倒计时</button><button id="focus-mode-pomodoro" type="button" data-mode="pomodoro" aria-pressed="true" disabled>番茄钟</button><button id="focus-mode-countup" type="button" data-mode="countup" aria-pressed="false" disabled>正计时</button></div></div>
+    <div class="focus-subject-row"><span id="focus-subject-caption">当前科目</span><button id="focus-subject" type="button" aria-haspopup="dialog" aria-controls="focus-subject-picker" aria-expanded="false" disabled><span id="focus-subject-name">未分类</span><svg class="focus-subject-chevron" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+    <div class="focus-compact-display"><div class="focus-state-line"><span id="focus-phase">专注</span><span id="focus-timer-state">未开始</span></div><output id="focus-time" aria-label="计时时间">25:00</output></div>
+    <progress id="focus-progress" max="1" value="0" aria-label="计时进度"></progress>
+    <div class="focus-actions"><button id="focus-start" type="button" disabled>开始专注</button><button id="focus-pause" type="button" hidden>暂停</button><button id="focus-reset" type="button" class="secondary" disabled>重置</button><button id="focus-skip" type="button" class="secondary" disabled>跳过</button><button id="focus-record" type="button" class="secondary" hidden>记录</button></div>
+    <div class="focus-compact-footer"><small id="focus-round">本轮已完成 0 个专注</small><button id="focus-open-settings" class="quiet" type="button" aria-label="计时设置与统计" disabled>设置与统计 <span aria-hidden="true">›</span></button></div>
+    <p id="focus-status" class="focus-status" role="status" aria-live="polite"></p>
+  </section>
+</main>
+<section id="focus-subject-picker" class="focus-subject-picker" role="dialog" aria-modal="true" aria-labelledby="focus-subject-title" hidden>
+  <header><button id="focus-subject-back" class="quiet" type="button">‹ 返回</button><h2 id="focus-subject-title">选择科目</h2></header>
+  <div id="focus-subject-list" role="menu" aria-label="科目"></div>
+  <nav class="focus-subject-pages" aria-label="科目翻页"><button id="focus-subject-prev" type="button" class="secondary">上一页</button><span id="focus-subject-page"></span><button id="focus-subject-next" type="button" class="secondary">下一页</button></nav>
+  <p id="focus-subject-status" class="focus-status" role="status" aria-live="polite"></p>
+</section>
+<script>window.__MNP_SETTINGS_TOKEN__="__MNP_TOKEN_VALUE__";</script>
+<script>/* MNP_APP */</script></body></html>

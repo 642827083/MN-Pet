@@ -1,0 +1,7 @@
+node_modules/
+src/web-dist/
+src/icon.png
+*.mnaddon
+AGENTS.md
+*社区介绍*.md
+artifacts/

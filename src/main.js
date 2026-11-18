@@ -1,0 +1,25 @@
+JSB.require('MNPNative');
+JSB.require('MNPPetModel');
+JSB.require('MNPPetCountdown');
+JSB.require('MNPPetBubble');
+JSB.require('MNPBuiltinPet');
+JSB.require('MNPPetPackModel');
+JSB.require('MNPPetStorage');
+JSB.require('MNPFocusStore');
+JSB.require('MNPFocusStats');
+JSB.require('MNPFocus');
+JSB.require('MNPFocusRuntime');
+JSB.require('MNPPetPackStore');
+JSB.require('MNPPetImageStore');
+JSB.require('MNPPetAnimationPlayer');
+JSB.require('MNPPetInteraction');
+JSB.require('MNPMenu');
+JSB.require('MNPPetOverlay');
+JSB.require('MNPPets');
+JSB.require('WebBridgeCommands');
+JSB.require('MNPAbout');
+JSB.require('MNPWindow');
+JSB.require('MNPPanel');
+JSB.require('MNPAddon');
+
+JSB.newAddon = createMnPetAddon;

@@ -1,0 +1,1 @@
+{"schema":1,"id":"blue-whale","name":"小鲸","author":"PC2005-cloud","version":"1.0.0","format":"animated-webp","frameSize":128,"visualAnchorX":0.58984375,"poster":"poster.png","actions":[{"id":"idle","label":"安静待机","count":60,"duration":10,"file":"actions/idle.webp"}]}
