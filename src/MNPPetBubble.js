@@ -22,11 +22,13 @@ var MNPPetBubble = (function () {
     ui.view.accessibilityLabel = payload.title + payload.value + '，' + payload.phase + ' ' + payload.time;
     ui.view.evaluateJavaScript('window.MNPPetBubblePage.set(' + MNPNative.script(payload) + ',' + (++ui.token) + ')', null);
   }
-  function update(s) {
+  // focus 可由调用方传入，避免每秒重复读取计时存档。
+  function update(s, focus) {
     MNPPetOverlay.cancelTimer(s, 'countdownDayTimer');
     if (!s.countdownShown || !s.countdownUI || !s.active || !s.settings.visible || !s.view || !s.view.superview) return;
     var data = MNPPetCountdown.read(), now = data.name && data.date ? new Date() : null;
-    var payload = now ? MNPPetCountdown.describe(data, now) : { title: '', value: '' }, focus = MNPFocusRuntime.current(s);
+    var payload = now ? MNPPetCountdown.describe(data, now) : { title: '', value: '' };
+    if (!focus) focus = MNPFocusRuntime.current(s);
     payload.time = focus.error ? '--:--' : MNPFocus.format(focus.displayMs, focus.state.mode === 'countup');
     payload.phase = focus.error ? '计时暂不可用' : focus.label; payload.status = focus.error ? 'idle' : focus.state.status;
     s.countdownUI.payload = payload; send(s);

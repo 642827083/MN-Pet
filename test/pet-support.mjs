@@ -65,7 +65,7 @@ export function pets({ files = new Map(), values = new Map() } = {}) {
     MNPPanel: { dispose(c) { c.disposed = true; } },
     JSB: { defineClass: (name, methods, statics) => { const value = { methods, statics, new: () => ({ view: new View({ x: 0, y: 0, width: 640, height: 600 }), _methods: methods }) }; classes.set(name.split(' ')[0], value); return value; } }
   });
-  for (const name of ["MNPNative","MNPPetModel","MNPPetCountdown","MNPPetBubble","MNPBuiltinPet","MNPPetPackModel","MNPPetStorage","MNPFocusStore","MNPFocusStats","MNPFocus","MNPFocusRuntime","MNPPetPackStore","MNPPetImageStore","MNPPetAnimationPlayer","MNPPetInteraction","MNPMenu","MNPPetOverlay","MNPPets","WebBridgeCommands","MNPAbout","MNPWindow","MNPPanel","MNPAddon"]) vm.runInContext(readFileSync('src/' + name + '.js', 'utf8'), context);
+  for (const name of ["MNPNative","MNPPetModel","MNPPetCountdown","MNPPetBubble","MNPBuiltinPet","MNPPetPackModel","MNPPetStorage","MNPFocusStore","MNPFocusStats","MNPFocus","MNPFocusRuntime","MNPPetPackStore","MNPPetImageStore","MNPPetAnimationPlayer","MNPPetAction","MNPPetInteraction","MNPMenu","MNPPetOverlay","MNPPets","WebBridgeCommands","MNPAbout","MNPWindow","MNPPanel","MNPAddon"]) vm.runInContext(readFileSync('src/' + name + '.js', 'utf8'), context);
   const addonClass = context.createMnPetAddon('/addon');
   function call(instance, method, ...args) { const previous = context.self; context.self = instance; try { return (instance._methods || addonClass.methods)[method](...args); } finally { context.self = previous; } }
   function open() {

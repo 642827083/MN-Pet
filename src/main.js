@@ -12,6 +12,7 @@ JSB.require('MNPFocusRuntime');
 JSB.require('MNPPetPackStore');
 JSB.require('MNPPetImageStore');
 JSB.require('MNPPetAnimationPlayer');
+JSB.require('MNPPetAction');
 JSB.require('MNPPetInteraction');
 JSB.require('MNPMenu');
 JSB.require('MNPPetOverlay');

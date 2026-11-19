@@ -75,6 +75,28 @@ test('科目归档锁定当前一次，科目预设持久化、删除保留统�
   const file = p.h.files.get(path); assert.ok(file); assert.equal(JSON.parse(file).presets.some(row => row.name === '数学'), false);
 });
 
+test('连续专注天数按本地日期统计，今天未开始不断连，热力图按周对齐下发毫秒', () => {
+  const p = setup(); p.act('mode', { mode: 'countup' });
+  assert.equal(p.read().stats.streakCurrent, 0); assert.equal(p.read().stats.streakBest, 0);
+  const heat = p.read().heatmap;
+  // 371 天按 7 取整并向前补到周一，因此首格固定是周一、末尾可能落在未来。
+  assert.equal(heat.ms.length, 371); assert.equal(heat.start, '2025-11-17'); assert.equal(heat.today, 365);
+  assert.equal(heat.ms[heat.today], 0);
+  p.act('start'); p.advance(60000); p.act('record');
+  let s = p.read(); assert.equal(s.stats.streakCurrent, 1); assert.equal(s.stats.streakBest, 1);
+  assert.equal(s.heatmap.ms[s.heatmap.today], 60000); assert.equal(s.heatmap.ms[s.heatmap.today - 1], 0);
+  // 次日没有记录时，昨天开始的连击仍然算数，不会因为今天还没开始就清零。
+  p.act('reset'); p.setTime(new Date(2026, 10, 18, 9).getTime());
+  s = p.read(); assert.equal(s.stats.streakCurrent, 1); assert.equal(s.heatmap.start, '2025-11-17'); assert.equal(s.heatmap.today, 366); assert.equal(s.heatmap.ms[s.heatmap.today], 0);
+  p.act('start'); p.advance(2400000); p.act('record');
+  s = p.read(); assert.equal(s.stats.streakCurrent, 2); assert.equal(s.stats.streakBest, 2); assert.equal(s.heatmap.ms[s.heatmap.today], 2400000);
+  // 断开一天后从今天重新开始计数，历史最长保持。
+  p.act('reset'); p.setTime(new Date(2026, 10, 21, 9).getTime());
+  p.act('start'); p.advance(60000); p.act('record');
+  s = p.read(); assert.equal(s.stats.streakCurrent, 1); assert.equal(s.stats.streakBest, 2);
+  assert.equal(s.heatmap.ms.filter(ms => ms > 0).length, 3);
+});
+
 test('状态和统计同一文件原子保存，写入失败保留原状态，重试只记录一次', () => {
   const p = setup(); p.act('start'); const before = Buffer.from(p.h.files.get(path)); p.advance(1500000);
   p.h.failWrite(path); assert.throws(() => p.read(), /保存失败/); assert.deepEqual(p.h.files.get(path), before);
@@ -167,6 +189,14 @@ test('主面板时间页管理设置与统计，小计时器操作计时，后�
   el('save-preset').click(); await flush(); assert.equal(p.read().hasPreset, true);
   quick('mode-countup').click(); await flush(); quick('start').click(); await flush(); p.advance(60000); timer.window.__MNP_FOCUS_STATE__(p.read());
   quick('record').click(); await flush(); main.window.__MNP_FOCUS_STATE__(p.read()); assert.match(el('today').textContent, /1 分钟/); assert.match(el('subject-stats').textContent, /<科目>/);
+  assert.equal(el('streak-current').textContent, '1 天'); assert.equal(el('streak-best').textContent, '1 天');
+  const cells = el('heatmap').children; assert.equal(cells.length, 371);
+  const index = p.read().heatmap.today;
+  assert.equal(cells[index].dataset.level, '1'); assert.match(cells[index].title, /1 分钟/);
+  assert.equal(cells[index - 1].dataset.level, '0');
+  // 今天之后的格子属于未来，不参与等级显示。
+  assert.equal(cells[index + 1].dataset.future, 'true');
+  assert.equal(el('heatmap-months').children.length, 53);
   el('range').value = 'day'; emit('range', 'change'); await flush(); assert.equal(el('chart').children.length, 24);
   quick('pause').click(); await flush(); quick('reset').click(); quick('reset').click(); await flush();
   quick('mode-pomodoro').click(); await flush(); assert.equal(p.read().state.mode, 'pomodoro');

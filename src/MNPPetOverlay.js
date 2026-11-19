@@ -71,12 +71,14 @@ var MNPPetOverlay = (function () {
     s.animationWarning = '';
     s.imageView.image = s.settings.source === 'builtin' ? MNPBuiltinPet.image(s) : s.settings.source === 'image' ? MNPPetImageStore.image(s.customPet) : MNPPetPackStore.poster(s.petPack);
     s.renderedRevision = revision; s.lastError = '';
-    if (s.settings.source === 'pack') MNPPetAnimationPlayer.play(s, s.petPack.manifest.actions.find(function (a) { return a.id === 'idle'; }), false);
+    // 挂载后按当前计时状态选择动作：待机、专注、休息各有对应素材。
+    MNPPetAction.refresh(s);
   }
   function hide(s) {
     MNPMenu.hide(s);
     MNPPetBubble.hide(s);
     MNPPetInteraction.stop(s); s.dragOrigin = null;
+    s.petDragging = false; s.petActionTarget = '';
     MNPPetAnimationPlayer.dispose(s); s.renderedRevision = '';
     if (s.view) s.view.removeFromSuperview();
     if (s.imageView) s.imageView.image = null;
@@ -87,7 +89,8 @@ var MNPPetOverlay = (function () {
       MNPMenu.close(s);
       MNPPetBubble.hide(s);
       MNPPetInteraction.stop(s);
-      if (s.settings.source === 'pack' && s.petPack) MNPPetAnimationPlayer.play(s, s.petPack.manifest.actions.find(function (action) { return action.id === 'idle'; }), false);
+      // 拖动期间播放拖动动作；结束后由状态机按计时状态恢复。
+      MNPPetAction.drag(s, true);
       s.dragOrigin = { x: s.view.frame.x, y: s.view.frame.y };
     }
     if (s.dragOrigin && [1, 2, 3].indexOf(gesture.state) >= 0) {
@@ -97,6 +100,7 @@ var MNPPetOverlay = (function () {
     if ([3, 4, 5].indexOf(gesture.state) >= 0) {
       s.dragOrigin = null;
       s.suppressTapUntil = Date.now() + 300;
+      MNPPetAction.drag(s, false);
       // 拖动只保存位置，避免覆盖其他窗口刚更新的显示选项。
       var latest = MNPPetModel.read(); latest.position = s.settings.position; MNPPetModel.write(latest);
     }

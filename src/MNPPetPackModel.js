@@ -1,6 +1,7 @@
 // 桌宠包的数据边界；同一校验器用于导入页面、原生保存和构建。
 var MNPPetPackModel = (function () {
-  var ids = ["idle", "wave", "happy", "shy", "sleep", "bow", "drag", "step"];
+  // 动作标识顺序即待机、拖动、专注、休息在前，其余保留旧包的兼容项。
+  var ids = ["idle", "drag", "focus", "rest", "wave", "happy", "shy", "sleep", "bow", "step"];
   var limits = { file: 2 * 1024 * 1024, total: 8 * 1024 * 1024, transfer: 12 * 1024 * 1024, zip: 10 * 1024 * 1024, chunk: 32768 };
   var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   function requireValue(ok, message) { if (!ok) throw new Error(message); }

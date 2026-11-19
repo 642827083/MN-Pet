@@ -108,6 +108,21 @@
       <div id="focus-pie" class="focus-pie" hidden></div>
       </div><div id="focus-subject-breakdown" class="focus-stat-breakdown"><h3>科目明细</h3><div id="focus-subject-stats"></div></div></div>
     </section>
+    <section class="pet-card" aria-labelledby="focus-streak-heading">
+      <div class="pet-card-heading"><div class="focus-streak-head"><h2 id="focus-streak-heading">连续专注</h2><div class="focus-heatmap-legend" aria-hidden="true"><span class="focus-heatmap-legend-item"><i data-level="0"></i>无</span><span class="focus-heatmap-legend-item"><i data-level="1"></i>轻</span><span class="focus-heatmap-legend-item"><i data-level="2"></i>中</span><span class="focus-heatmap-legend-item"><i data-level="3"></i>高</span><span class="focus-heatmap-legend-item"><i data-level="4"></i>很高</span></div></div></div>
+      <div class="focus-streak">
+        <div class="focus-streak-card"><span>当前连击</span><strong id="focus-streak-current">0 天</strong></div>
+        <div class="focus-streak-card"><span>历史最长</span><strong id="focus-streak-best">0 天</strong></div>
+      </div>
+      <div class="focus-heatmap-scroll">
+        <div id="focus-heatmap-months" class="focus-heatmap-months" aria-hidden="true"></div>
+        <div class="focus-heatmap-grid">
+          <div class="focus-heatmap-weekdays" aria-hidden="true"><span>一</span><span></span><span>三</span><span></span><span>五</span><span></span><span>日</span></div>
+          <div id="focus-heatmap" class="focus-heatmap" role="group" aria-label="近 53 周专注热力图"></div>
+        </div>
+      </div>
+      <p class="focus-help">每格代表一天，颜色越深当天专注越多；今天还没开始不算中断。</p>
+    </section>
     <section class="pet-card" aria-labelledby="focus-distribution-heading"><div class="pet-card-heading"><h2 id="focus-distribution-heading">时间分布</h2></div><div class="focus-chart-scroll"><div id="focus-chart" class="focus-chart" role="group" aria-label="专注时长分布"></div></div></section>
     <p id="focus-stats-status" class="focus-status" role="status" aria-live="polite"></p>
   </div>

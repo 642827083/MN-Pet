@@ -71,6 +71,41 @@ export class FocusSettings extends FocusClient {
     $('remove-subject').textContent = this.confirm === 'remove' ? '确认删除科目' : '删除科目';
     $('clear-preset').hidden = !this.state.hasPreset;
   }
+  // 与原生同一套阈值：0 无、30 分钟以下轻、1 小时以下中、2 小时以下高、其余很高。
+  heatLevel(ms) { return ms <= 0 ? 0 : ms < 1800000 ? 1 : ms < 3600000 ? 2 : ms < 7200000 ? 3 : 4; }
+  // 原生只下发起点、今天下标与毫秒数组，日期在这里按天累加还原，避免推送富对象。
+  renderHeatmap(heat) {
+    const days = heat && Array.isArray(heat.ms) ? heat.ms : [];
+    if (!days.length) { $('heatmap').replaceChildren(); $('heatmap-months').replaceChildren(); return; }
+    // 每秒都会收到同一份热力图，用轻量滚动哈希判断是否真的变了，避免整表重绘。
+    let hash = 0;
+    for (const ms of days) hash = (Math.imul(hash, 31) + ms) | 0;
+    const signature = heat.start + ':' + heat.today + ':' + days.length + ':' + hash;
+    if (signature === this.heatSignature) return;
+    this.heatSignature = signature;
+    const part = heat.start.split('-').map(Number);
+    const origin = new Date(part[0], part[1] - 1, part[2]);
+    const box = days.map((ms, index) => {
+      const at = new Date(origin.getFullYear(), origin.getMonth(), origin.getDate() + index);
+      const cell = document.createElement('span'); cell.className = 'focus-heatmap-cell';
+      const future = index > heat.today;
+      if (future) cell.dataset.future = 'true'; else cell.dataset.level = String(this.heatLevel(ms));
+      const label = (at.getMonth() + 1) + '月' + at.getDate() + '日' + (future ? '：尚未到来' : '：' + minutes(ms));
+      cell.title = label; cell.setAttribute('aria-label', label);
+      return cell;
+    });
+    $('heatmap').replaceChildren(...box);
+    // 月标签按列定位：只在每列首格所在月份与上一列不同的列上标注。
+    // 这里不加抽稀：月份之间相隔 4 列以上，只要 CSS 里月标签与格子的列宽定义一致就不会压字。
+    const columns = Math.ceil(days.length / 7), marks = [];
+    for (let column = 0; column < columns; column++) marks.push('');
+    let previous = -1;
+    for (let column = 0; column < columns; column++) {
+      const at = new Date(origin.getFullYear(), origin.getMonth(), origin.getDate() + column * 7);
+      if (at.getMonth() !== previous) { marks[column] = (at.getMonth() + 1) + '月'; previous = at.getMonth(); }
+    }
+    $('heatmap-months').replaceChildren(...marks.map(text => { const span = document.createElement('span'); span.textContent = text; return span; }));
+  }
   render(data) {
     if (!this.accept(data)) return;
     const subjectSignature = JSON.stringify(data.subjects);
@@ -88,6 +123,8 @@ export class FocusSettings extends FocusClient {
     summaryTime('today-time', stats.todayMs); summaryTime('range-time', stats.totalMs); summaryTime('lifetime-time', stats.lifetimeMs);
     $('today-count').textContent = stats.todayCount + ' 次'; $('range-count').textContent = stats.count + ' 次'; $('lifetime-count').textContent = stats.lifetimeCount + ' 次';
     $('range-label').textContent = { day: '今天', week: '最近 7 天', month: '最近 30 天' }[this.range];
+    $('streak-current').textContent = stats.streakCurrent + ' 天'; $('streak-best').textContent = stats.streakBest + ' 天';
+    this.renderHeatmap(data.heatmap);
     const signature = JSON.stringify(stats);
     if (signature !== this.statsSignature) {
       this.statsSignature = signature; const max = Math.max(60000, ...stats.series.map(row => row.ms));

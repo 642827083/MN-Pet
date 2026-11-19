@@ -76,6 +76,29 @@
 .focus-summary-card .focus-summary-unit{font-size:12px;font-weight:400;letter-spacing:0;white-space:nowrap}
 .focus-summary-card small{font-size:12px;margin:0;color:var(--mnp-panel-muted)}
 .focus-range-control{display:flex;align-items:center;gap:8px}
+.focus-streak{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border:1px solid var(--mnp-panel-line);border-radius:var(--mnp-panel-radius);background:#fff;margin-bottom:14px}
+.focus-streak-card{display:flex;flex-direction:column;gap:4px;padding:var(--mnp-panel-padding)}
+.focus-streak-card+.focus-streak-card{border-left:1px solid var(--mnp-panel-line)}
+.focus-streak-card>span{font-size:12px;color:var(--mnp-panel-muted)}
+.focus-streak-card strong{font-size:23px;font-weight:650;line-height:1.3;letter-spacing:-.6px;color:#3c517b;font-variant-numeric:tabular-nums}
+.focus-streak-head{display:flex;align-items:center;gap:14px;min-width:0}
+.focus-heatmap-legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mnp-panel-muted);line-height:1}
+.focus-heatmap-legend-item{display:inline-flex;align-items:center;gap:3px}
+.focus-heatmap-legend-item i{width:9px;height:9px;border-radius:2px;background:#e9edf5}
+.focus-heatmap-scroll{min-width:0;overflow-x:auto;overflow-y:hidden;padding-bottom:2px}
+/* 月标签与格子共用同一套列宽定义：宽屏按 1fr 铺满，窄屏退到 10px 并整体横向滚动，标签因此不会互相压字。 */
+.focus-heatmap-months{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(10px,1fr);gap:3px;margin:0 0 4px 24px;font-size:10px;line-height:1.4;color:var(--mnp-panel-muted)}
+.focus-heatmap-months span{grid-row:1;white-space:nowrap}
+.focus-heatmap-grid{display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 6px;min-width:0}
+.focus-heatmap-weekdays{display:grid;grid-template-rows:repeat(7,1fr);gap:3px;font-size:10px;line-height:1;color:var(--mnp-panel-muted)}
+.focus-heatmap-weekdays span{display:flex;align-items:center;justify-content:flex-end;white-space:nowrap}
+.focus-heatmap{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);grid-auto-columns:minmax(10px,1fr);gap:3px}
+.focus-heatmap-cell{aspect-ratio:1;border-radius:2px;background:#e9edf5}
+.focus-heatmap-cell[data-future="true"]{background:transparent}
+.focus-heatmap-cell[data-level="1"],.focus-heatmap-legend-item i[data-level="1"]{background:#c3d3f7}
+.focus-heatmap-cell[data-level="2"],.focus-heatmap-legend-item i[data-level="2"]{background:#93aeee}
+.focus-heatmap-cell[data-level="3"],.focus-heatmap-legend-item i[data-level="3"]{background:#6285e0}
+.focus-heatmap-cell[data-level="4"],.focus-heatmap-legend-item i[data-level="4"]{background:#3c5cc4}
 .focus-range-control>span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 #settings-main .focus-range-control select{min-height:var(--mnp-panel-control);padding-top:9px;padding-bottom:9px;background:#f2f5fb}
 .focus-subject-stats-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
@@ -103,7 +126,7 @@
 #settings-main .pet-card h2.pet-card-label{font-size:14px;font-weight:650;color:var(--mnp-panel-ink)}
 @media(min-width:680px){#settings-main #focus-settings .pet-countdown-fields{grid-template-columns:repeat(4,minmax(0,1fr))}#settings-main .focus-duration-card .focus-switches{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}#focus-countdown-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:end}#settings-main #focus-countdown-settings .pet-countdown-fields{grid-template-columns:minmax(0,1fr)}#settings-main #focus-countdown-settings .focus-help{margin:0;padding-bottom:9px}#settings-main #focus-countdown-settings>button[type=submit]{margin:0;justify-self:start}#settings-main #focus-countdown-status{align-self:center;margin:0}}
 @media(min-width:700px){.focus-subject-stats-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}.focus-stat-breakdown{border-top:0;border-left:1px solid var(--mnp-panel-line);padding:0 0 0 20px}.focus-stat-breakdown h3{margin-bottom:8px}}
-@media(max-width:440px){:root{--mnp-panel-padding:16px}#settings-main{padding-left:14px;padding-right:14px}#settings-main .pet-preview{width:72px;height:72px;flex-basis:72px}#settings-main .pet-preview img{width:66px;height:66px}#settings-main .pet-overview{gap:12px}#settings-main .pet-description strong{font-size:18px}.focus-summary-card{padding:0 10px}.focus-summary-card strong{font-size:21px}}
+@media(max-width:440px){:root{--mnp-panel-padding:16px}#settings-main{padding-left:14px;padding-right:14px}#settings-main .pet-preview{width:72px;height:72px;flex-basis:72px}#settings-main .pet-preview img{width:66px;height:66px}#settings-main .pet-overview{gap:12px}#settings-main .pet-description strong{font-size:18px}.focus-summary-card{padding:0 10px}.focus-summary-card strong{font-size:21px}.focus-streak-card strong{font-size:21px}}
 @media(max-width:360px){.focus-summary-card{padding:0 8px}.focus-summary-card strong{font-size:19px}.focus-summary-card .focus-summary-unit{font-size:11px}.focus-summary-card>span,.focus-summary-card small{font-size:11px}#settings-main .focus-stat-row{grid-template-columns:minmax(0,1fr);gap:3px}#settings-main .focus-stat-row>span:last-child{padding-left:16px}}
 @media(max-width:299px){#settings-main #focus-settings .pet-countdown-fields{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){.focus-subject-details>summary::after{transition:none}}

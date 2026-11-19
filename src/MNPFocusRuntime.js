@@ -13,7 +13,10 @@ var MNPFocusRuntime = (function () {
   }
   function publish(s) {
     if (!s || s.destroyed || !s.active) return;
-    MNPPetBubble.update(s);
+    // 每秒复用同一份计时快照：气泡和桌宠动作都要用，避免重复读盘。
+    var focus = current(s);
+    MNPPetBubble.update(s, focus);
+    MNPPetAction.sync(s, focus);
     [s.focusController, s.context.panelController].forEach(function (panel) {
       if (panel && panel.visible && !panel.disposed && panel.settingsView) MNPNative.evaluate(panel.settingsView,
         'window.__MNP_FOCUS_STATE__&&window.__MNP_FOCUS_STATE__(' + MNPNative.script(current(s, panel.focusRange)) + ')').catch(function () {});

@@ -5,9 +5,12 @@ var MNPPetInteraction = (function () {
     if (s.imageView) s.imageView.frame = frame;
     if (s.animationUI && s.animationUI.view) s.animationUI.view.frame = frame;
   }
+  // 收起一次性动画与拖动状态；动作记忆交回状态机，避免下次同步重复下发素材。
   function stop(s) {
     MNPPetOverlay.cancelTimer(s, 'petActionTimer'); MNPPetOverlay.cancelTimer(s, 'petBounceTimer');
-    s.petPressed = false; s.petSquash = null; s.petActionId = 'idle'; reset(s);
+    s.petPressed = false; s.petSquash = null; s.petDragging = false; s.petActionHold = false;
+    s.petActionId = s.petActionTarget || 'idle';
+    reset(s);
   }
   function mounted(s) { return !s.destroyed && s.active && s.settings.visible && s.view && s.view.superview; }
   function layout(s) {
@@ -90,15 +93,18 @@ var MNPPetInteraction = (function () {
     }
     stop(s);
     var actions = s.settings.source === 'pack' && s.petPack ? s.petPack.manifest.actions : [];
-    var pool = actions.filter(function (action) { return ['happy', 'wave', 'shy', 'bow'].indexOf(action.id) >= 0; });
-    if (!pool.length) pool = actions.filter(function (action) { return action.id !== 'idle' && action.id !== 'drag'; });
+    // 点击反馈优先播放下表中任意一个；四类状态动作不参与随机，避免打断计时语义。
+    // 动作清单本身受 MNPPetPackModel 白名单约束，枚举完仍为空就说明包里只有状态动作。
+    var pool = actions.filter(function (action) { return ['happy', 'wave', 'shy', 'bow', 'sleep', 'step'].indexOf(action.id) >= 0; });
     if (!pool.length) { bounce(s); return; }
     var action = pool[Math.floor(Math.random() * pool.length)]; s.petActionId = action.id;
+    // 点击反馈期间挂起计时状态同步，播完后再交还状态机。
+    MNPPetAction.hold(s, true);
     MNPPetAnimationPlayer.play(s, action, false);
     MNPPetOverlay.schedule(s, 'petActionTimer', action.duration, function () {
+      MNPPetAction.hold(s, false);
       if (!mounted(s) || s.settings.source !== 'pack' || !s.petPack) return;
-      s.petActionId = 'idle';
-      MNPPetAnimationPlayer.play(s, s.petPack.manifest.actions.find(function (item) { return item.id === 'idle'; }), false);
+      MNPPetAction.refresh(s);
     });
   }
   return { tap: tap, press: press, release: release, layout: layout, stop: stop };

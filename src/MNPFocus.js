@@ -36,7 +36,8 @@ var MNPFocus = (function () {
     var s = state(data), ms = s.mode === 'countup' ? elapsed(s, now) : remaining(s, now), options = MNPFocusStore.settings(data.settings);
     var preset = data.presets.find(function (p) { return p.name === data.current; });
     if (preset) Object.keys(MNPFocusStore.limits).forEach(function (k) { options[k] = MNPFocusStore.settings(preset.values)[k]; });
-    return { state: s, displayMs: ms, capturedAt: now, label: s.mode === 'countup' ? '正计时' : s.mode === 'countdown' ? '倒计时' : labels[s.phase], settings: options, subjects: data.subjects, current: data.current, hasPreset: !!preset, stats: MNPFocusStats.report(data, range || 'week', now) };
+    // 连续天数随统计一起下发；热力图固定近 53 周（按周对齐），并以毫秒数组压缩推送体积。
+    return { state: s, displayMs: ms, capturedAt: now, label: s.mode === 'countup' ? '正计时' : s.mode === 'countdown' ? '倒计时' : labels[s.phase], settings: options, subjects: data.subjects, current: data.current, hasPreset: !!preset, stats: MNPFocusStats.report(data, range || 'week', now), heatmap: MNPFocusStats.heatmap(data, now, 371) };
   }
   function tick() {
     var data = MNPFocusStore.read(), event = settle(data, Date.now()); if (event) MNPFocusStore.write(data); return event;

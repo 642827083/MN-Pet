@@ -18,7 +18,7 @@ function inspect(bytes) {
     const size = u32(at + 24), nameLength = u16(at + 28), next = at + 46 + nameLength + u16(at + 30) + u16(at + 32);
     if (next > end) throw new Error('桌宠包目录不完整');
     const name = strFromU8(bytes.subarray(at + 46, at + 46 + nameLength));
-    if (!/^(pet\.json|poster\.png|LICENSE\.txt|actions\/|actions\/(idle|wave|happy|shy|sleep|bow|drag|step)\.webp)$/.test(name) || entries.has(name) || (u16(at + 8) & 1) || ![0, 8].includes(u16(at + 10)) || ((u32(at + 38) >>> 16) & 0xf000) === 0xa000) throw new Error('桌宠包包含重复、加密或不支持的文件');
+    if (!/^(pet\.json|poster\.png|LICENSE\.txt|actions\/|actions\/(idle|drag|focus|rest|wave|happy|shy|sleep|bow|step)\.webp)$/.test(name) || entries.has(name) || (u16(at + 8) & 1) || ![0, 8].includes(u16(at + 10)) || ((u32(at + 38) >>> 16) & 0xf000) === 0xa000) throw new Error('桌宠包包含重复、加密或不支持的文件');
     const limit = name === 'pet.json' ? 32768 : name === 'LICENSE.txt' ? 65536 : MNPPetPackModel.limits.file;
     total += size;
     if (size > limit || total > MNPPetPackModel.limits.total + 98304 || (name.endsWith('/') && size)) throw new Error('桌宠包展开后超过大小限制');
