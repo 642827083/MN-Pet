@@ -70,3 +70,25 @@ test('无数据时两种图表均显示空状态，多科目更新后配色不�
   assert.equal(el('pie').querySelectorAll('path').length, 20); assert.equal(el('empty').hidden, true);
   const colors = [...el('pie').querySelectorAll('path')].map(path => path.getAttribute('fill')); assert.equal(new Set(colors).size, 20);
 });
+
+test('热力图按面板宽度决定列数，变窄时裁掉最早的整周，最近日期始终留在最右侧', async t => {
+  const { dom, d, el } = await page(t, true), doc = dom.window.document;
+  const width = { value: 0 }, cells = () => [...doc.getElementById('focus-heatmap').children];
+  // jsdom 不做排版，clientWidth 恒为 0，用可变的 getter 模拟面板宽度。
+  Object.defineProperty(el('heatmap'), 'clientWidth', { get: () => width.value });
+  const paint = () => dom.window.__MNP_FOCUS_STATE__(plain(d.command('getFocusState', { range: 'week' })));
+  // 宽度读不到时按全年画满 53 周，作为「最宽处全览」的基准。
+  assert.equal(cells().length, 371);
+  assert.equal(doc.getElementById('focus-heatmap-months').children.length, 53);
+  assert.match(cells()[0].title, /^2025年?11月17日|^11月17日/);
+  // 200 像素只放得下 18 列，月份从最早一侧整周裁掉，右侧仍保留今天与之后的占位。
+  width.value = 200; paint();
+  assert.equal(cells().length, 18 * 7);
+  assert.equal(doc.getElementById('focus-heatmap-months').children.length, 18);
+  assert.notEqual(cells()[0].title, '2025年11月17日：0 分钟');
+  assert.match(cells().at(-6).title, /11月17日/);
+  assert.equal(cells().at(-1).dataset.future, 'true');
+  // 重新变宽后回到全览，不残留裁切结果。
+  width.value = 674; paint();
+  assert.equal(cells().length, 371);
+});

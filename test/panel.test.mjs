@@ -188,6 +188,25 @@ test('桌宠与倒计时独立切换，键盘可导航，关闭重开保留当�
   assert.equal(p.c.loadingLabel, undefined); assert.equal(p.c.retryButton.hidden, true); assert.ok(p.doc.getElementById('pet-settings'));
 });
 
+test('主设置面板禁用双指缩放与双击放大，保留正常滚动，重建或加载完成后仍为 1 倍', async t => {
+  const p = await setup(t), c = p.c;
+  function locked(view) {
+    const scroll = view.scrollView;
+    assert.equal(scroll.minimumZoomScale, 1); assert.equal(scroll.maximumZoomScale, 1);
+    assert.equal(scroll.bouncesZoom, false); assert.equal(scroll.zoomScale, 1);
+    assert.equal(scroll.pinchGestureRecognizer.enabled, false);
+    assert.notEqual(scroll.scrollEnabled, false, '主面板仍要能上下滚动');
+  }
+  locked(c.settingsView);
+  c.settingsView.scrollView.zoomScale = 2.4;
+  p.call('webViewDidFinishLoad', c.settingsView); locked(c.settingsView);
+  const old = c.settingsView; old.dom.window.document.body.replaceChildren();
+  p.call('webViewDidFailLoadWithError', old, { code: -1009 }); await flush();
+  assert.notEqual(c.settingsView, old); locked(c.settingsView);
+  const viewport = p.doc.querySelector('meta[name=viewport]').content;
+  assert.match(viewport, /maximum-scale=1/); assert.match(viewport, /user-scalable=no/);
+});
+
 test('原生控制器第一次读取 view 触发加载回调时，只初始化一遍面板和页面', async t => {
   let loads = 0; const p = await setup(t, () => { loads++; }, true);
   assert.equal(loads, 1, '首次访问原生 view 不应导致两次页面加载');

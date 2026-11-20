@@ -1,16 +1,19 @@
 var MNPPanel = (function () {
   var N = MNPNative;
-  function fixFocusViewport(controller, view) {
-    if (controller.kind !== 'focus' || !view) return;
+  function fixViewport(controller, view) {
+    if (!view) return;
     var scroll = N.value(view, 'scrollView');
     if (!scroll) return;
-    // 小计时器是固定控件面板，不保留网页滚动、回弹和捏合缩放。
-    scroll.scrollEnabled = false; scroll.bounces = false;
-    scroll.alwaysBounceVertical = false; scroll.alwaysBounceHorizontal = false; scroll.bouncesZoom = false;
-    scroll.showsVerticalScrollIndicator = false; scroll.showsHorizontalScrollIndicator = false;
-    scroll.minimumZoomScale = 1; scroll.maximumZoomScale = 1; scroll.zoomScale = 1;
-    scroll.contentOffset = { x: 0, y: 0 };
+    // 两个面板都不允许双指或双击放大，始终保持 1 倍比例；缩放一旦发生文字会糊成一团。
+    scroll.bouncesZoom = false; scroll.minimumZoomScale = 1; scroll.maximumZoomScale = 1;
+    if (N.value(scroll, 'zoomScale') !== 1) scroll.zoomScale = 1;
     var pinch = N.value(scroll, 'pinchGestureRecognizer'); if (pinch) pinch.enabled = false;
+    if (controller.kind !== 'focus') return;
+    // 小计时器是固定控件面板，除缩放外也不保留网页滚动、回弹和偏移。
+    scroll.scrollEnabled = false; scroll.bounces = false;
+    scroll.alwaysBounceVertical = false; scroll.alwaysBounceHorizontal = false;
+    scroll.showsVerticalScrollIndicator = false; scroll.showsHorizontalScrollIndicator = false;
+    scroll.contentOffset = { x: 0, y: 0 };
   }
   function control(controller, title, action) {
     var view = new UIButton({ x: 0, y: 0, width: 44, height: 44 }); view.setTitleForState(title, 0);
@@ -23,7 +26,7 @@ var MNPPanel = (function () {
     controller.titleLabel.frame = { x: 44, y: 0, width: Math.max(1, width - 88), height: headerHeight };
     if (controller.closeButton) controller.closeButton.frame = { x: width - 44, y: 0, width: 44, height: 44 };
     controller.settingsView.frame = { x: 0, y: headerHeight, width: width, height: Math.max(1, height - headerHeight) };
-    fixFocusViewport(controller, controller.settingsView);
+    fixViewport(controller, controller.settingsView);
     if (controller.kind === 'focus') {
       var session = controller.addon.petSession, host = session && session.view && session.view.superview, limit = host && Math.max(1, host.bounds.height - 16);
       if (limit && (controller.focusLimit !== limit || controller.focusLimitView !== controller.settingsView)) {
@@ -43,7 +46,7 @@ var MNPPanel = (function () {
     var old = controller.settingsView, view = new UIWebView(old ? old.frame : { x: 0, y: 44, width: 640, height: 560 });
     view.delegate = controller; view.scalesPageToFit = false; view.dataDetectorTypes = 0; view.backgroundColor = UIColor.whiteColor();
     controller.settingsView = view;
-    fixFocusViewport(controller, view);
+    fixViewport(controller, view);
     if (old) {
       old.delegate = null; old.stopLoading();
       // 保持关闭按钮、异常重试和缩放手柄在网页上方。
@@ -172,7 +175,7 @@ var MNPPanel = (function () {
     },
     webViewDidFinishLoad: function (view) {
       if (view !== self.settingsView || N.value(view, 'loading') === true) return;
-      fixFocusViewport(self, view);
+      fixViewport(self, view);
       self.settingsLoading = false; cancelTimer(self, 'settingsLoadTimer'); refresh(self, false);
     },
     webViewDidFailLoadWithError: function (view, error) {

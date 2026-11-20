@@ -39,6 +39,10 @@
 #settings-main .pet-countdown-fields{gap:14px}
 #settings-main .pet-countdown-fields label{font-size:13px;color:#5c6980}
 #settings-main .pet-countdown-fields input{height:var(--mnp-panel-control);margin-top:6px;font-size:16px;border-radius:9px;background:#fafbfe;border-color:#e0e6f1}
+/* iOS 遇到字号小于 16px 的输入类控件会在聚焦时自动放大整页，这里统一抬到 16px 防止跳变。 */
+#settings-main input:not([type=range]):not([type=checkbox]),#settings-main select,#pet-editor input:not([type=range]){font-size:16px}
+/* 减少双击放大这类页面手势；双指缩放由原生滚动视图锁在 1 倍。 */
+html,body,#settings-main,#pet-editor{touch-action:manipulation}
 #settings-main .focus-help,#settings-main .pet-countdown-help{font-size:12px;line-height:1.6;color:var(--mnp-panel-muted)}
 #settings-main .focus-help{margin-top:10px}
 #settings-main .focus-status{font-size:12px;line-height:1.6;margin:10px 0 0;overflow-wrap:anywhere}
@@ -85,14 +89,15 @@
 .focus-heatmap-legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mnp-panel-muted);line-height:1}
 .focus-heatmap-legend-item{display:inline-flex;align-items:center;gap:3px}
 .focus-heatmap-legend-item i{width:9px;height:9px;border-radius:2px;background:#e9edf5}
-.focus-heatmap-scroll{min-width:0;overflow-x:auto;overflow-y:hidden;padding-bottom:2px}
-/* 月标签与格子共用同一套列宽定义：宽屏按 1fr 铺满，窄屏退到 10px 并整体横向滚动，标签因此不会互相压字。 */
-.focus-heatmap-months{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(10px,1fr);gap:3px;margin:0 0 4px 24px;font-size:10px;line-height:1.4;color:var(--mnp-panel-muted)}
-.focus-heatmap-months span{grid-row:1;white-space:nowrap}
+/* 热力图不横向滚动：列数由脚本按可用宽度裁到能放下的整周数，最近日期总在最右侧完整可见。 */
+.focus-heatmap-scroll{min-width:0;overflow:hidden;padding-bottom:2px}
+/* 月标签与格子共用 --mnp-heat-cell 这一列宽：列数由脚本按可用宽度算好，两者永远对齐。 */
+.focus-heatmap-months{display:grid;grid-auto-flow:column;grid-auto-columns:var(--mnp-heat-cell,1fr);gap:3px;margin:0 0 4px 24px;font-size:10px;line-height:1.4;color:var(--mnp-panel-muted);overflow:hidden}
+.focus-heatmap-months span{grid-row:1;white-space:nowrap;min-width:0}
 .focus-heatmap-grid{display:grid;grid-template-columns:18px minmax(0,1fr);gap:0 6px;min-width:0}
 .focus-heatmap-weekdays{display:grid;grid-template-rows:repeat(7,1fr);gap:3px;font-size:10px;line-height:1;color:var(--mnp-panel-muted)}
 .focus-heatmap-weekdays span{display:flex;align-items:center;justify-content:flex-end;white-space:nowrap}
-.focus-heatmap{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);grid-auto-columns:minmax(10px,1fr);gap:3px}
+.focus-heatmap{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);grid-auto-columns:var(--mnp-heat-cell,1fr);gap:3px;min-width:0;overflow:hidden}
 .focus-heatmap-cell{aspect-ratio:1;border-radius:2px;background:#e9edf5}
 .focus-heatmap-cell[data-future="true"]{background:transparent}
 .focus-heatmap-cell[data-level="1"],.focus-heatmap-legend-item i[data-level="1"]{background:#c3d3f7}
